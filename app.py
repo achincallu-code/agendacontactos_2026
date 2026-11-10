@@ -45,6 +45,7 @@ app.config.update(
     CONTACTS_OWNER_EMAIL=os.environ.get("CONTACTS_OWNER_EMAIL", "").strip().lower(),
 )
 csrf = CSRFProtect(app)
+CATEGORIAS_CONTACTO = ("Familia", "Amigos", "Escuela", "Trabajo", "Otros")
 
 if os.environ.get("RENDER") and not os.environ.get("DATABASE_URL"):
     raise RuntimeError("Configura DATABASE_URL en Render para usar una base persistente.")
@@ -79,10 +80,55 @@ def asignar_contactos_legacy(usuario):
 
 
 def correo_valido(correo):
-    if not correo or len(correo) > 254 or correo.count("@") != 1:
+    if not correo or len(correo) > 254:
         return False
-    local, dominio = correo.split("@")
-    return bool(local and dominio and "." in dominio and not re.search(r"\s", correo))
+    partes = correo.split("@")
+    if len(partes) != 2 or len(partes[0]) > 64 or len(partes[1]) > 253:
+        return False
+    patron = (
+        r"[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+"
+        r"(?:\.[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+)*@"
+        r"(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+"
+        r"[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?"
+    )
+    return re.fullmatch(patron, correo) is not None
+
+
+def validar_contacto(nombre, telefono, correo, categoria, categoria_actual=None):
+    if not nombre or len(nombre) > 100:
+        return "Escribe un nombre de hasta 100 caracteres."
+    if not telefono or len(telefono) > 30:
+        return "Escribe un teléfono de hasta 30 caracteres."
+    if not re.fullmatch(r"\+?[0-9().\-\s]+", telefono):
+        return "El teléfono solo puede contener números, espacios y + ( ) . -."
+    digitos_telefono = re.sub(r"\D", "", telefono)
+    if not 7 <= len(digitos_telefono) <= 15:
+        return "El teléfono debe contener entre 7 y 15 dígitos."
+    if correo and not correo_valido(correo):
+        return "Escribe un correo electrónico válido (máximo 254 caracteres)."
+    if (
+        categoria not in CATEGORIAS_CONTACTO
+        and categoria != categoria_actual
+    ):
+        return "Selecciona una categoría válida."
+    return None
+
+
+def datos_contacto_formulario():
+    return {
+        "nombre": " ".join(request.form.get("nombre", "").split()),
+        "telefono": request.form.get("telefono", "").strip(),
+        "correo": request.form.get("correo", "").strip(),
+        "categoria": request.form.get("categoria", "").strip(),
+    }
+
+
+def mostrar_error_base_datos(operacion):
+    app.logger.exception("Error de base de datos al %s.", operacion)
+    flash(
+        "No se pudo completar la operación. Inténtalo de nuevo más tarde.",
+        "error",
+    )
 
 
 @app.route("/")
@@ -90,7 +136,12 @@ def correo_valido(correo):
 def inicio():
     """READ: consultar y mostrar solo los contactos de la cuenta."""
     contactos = obtener_contactos(g.usuario["id"])
-    return render_template("index.html", contactos=contactos)
+    return render_template(
+        "index.html",
+        contactos=contactos,
+        categorias=CATEGORIAS_CONTACTO,
+        formulario={},
+    )
 
 
 @app.route("/health")
@@ -174,16 +225,28 @@ def cerrar_sesion():
 @login_requerido
 def agregar():
     """CREATE: validar y guardar un contacto para la cuenta."""
-    nombre = request.form.get("nombre", "").strip()
-    telefono = request.form.get("telefono", "").strip()
-    correo = request.form.get("correo", "").strip()
-    categoria = request.form.get("categoria", "").strip()
+    formulario = datos_contacto_formulario()
+    error = validar_contacto(**formulario)
+    if error:
+        flash(error, "error")
+        return render_template(
+            "index.html",
+            contactos=obtener_contactos(g.usuario["id"]),
+            categorias=CATEGORIAS_CONTACTO,
+            formulario=formulario,
+        )
 
-    if not nombre or not telefono or not categoria:
-        flash("Nombre, teléfono y categoría son obligatorios.", "error")
+    try:
+        agregar_contacto(
+            formulario["nombre"],
+            formulario["telefono"],
+            formulario["correo"],
+            formulario["categoria"],
+            g.usuario["id"],
+        )
+    except (sqlite3.Error, psycopg.Error):
+        mostrar_error_base_datos("guardar un contacto")
         return redirect(url_for("inicio"))
-
-    agregar_contacto(nombre, telefono, correo, categoria, g.usuario["id"])
     flash("Contacto agregado correctamente.", "success")
     return redirect(url_for("inicio"))
 
@@ -200,23 +263,30 @@ def editar(contacto_id):
         return redirect(url_for("inicio"))
 
     if request.method == "POST":
-        nombre = request.form.get("nombre", "").strip()
-        telefono = request.form.get("telefono", "").strip()
-        correo = request.form.get("correo", "").strip()
-        categoria = request.form.get("categoria", "").strip()
-
-        if not nombre or not telefono or not categoria:
-            flash("Nombre, teléfono y categoría son obligatorios.", "error")
+        formulario = datos_contacto_formulario()
+        error = validar_contacto(
+            **formulario,
+            categoria_actual=contacto["categoria"],
+        )
+        if error:
+            flash(error, "error")
             return render_template("editar.html", contacto=contacto)
 
-        actualizar_contacto(
-            contacto_id,
-            nombre,
-            telefono,
-            correo,
-            categoria,
-            usuario_id,
-        )
+        try:
+            actualizado = actualizar_contacto(
+                contacto_id,
+                formulario["nombre"],
+                formulario["telefono"],
+                formulario["correo"],
+                formulario["categoria"],
+                usuario_id,
+            )
+        except (sqlite3.Error, psycopg.Error):
+            mostrar_error_base_datos("actualizar un contacto")
+            return render_template("editar.html", contacto=contacto), 500
+        if not actualizado:
+            flash("El contacto ya no existe o fue eliminado.", "error")
+            return redirect(url_for("inicio"))
         flash("Contacto actualizado correctamente.", "success")
         return redirect(url_for("inicio"))
 
@@ -227,7 +297,14 @@ def editar(contacto_id):
 @login_requerido
 def eliminar(contacto_id):
     """DELETE: elimina únicamente un contacto de la cuenta."""
-    eliminar_contacto(contacto_id, g.usuario["id"])
+    try:
+        eliminado = eliminar_contacto(contacto_id, g.usuario["id"])
+    except (sqlite3.Error, psycopg.Error):
+        mostrar_error_base_datos("eliminar un contacto")
+        return redirect(url_for("inicio"))
+    if not eliminado:
+        flash("El contacto ya no existe o fue eliminado.", "error")
+        return redirect(url_for("inicio"))
     flash("Contacto eliminado.", "success")
     return redirect(url_for("inicio"))
 

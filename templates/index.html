@@ -28,25 +28,23 @@
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <div class="campo">
             <label for="nombre"><svg class="icono-campo" aria-hidden="true"><use href="#icono-usuario"></use></svg> Nombre <span class="requerido">*</span></label>
-            <input type="text" id="nombre" name="nombre" placeholder="Ej. Alex García" required maxlength="100" autocomplete="name">
+            <input type="text" id="nombre" name="nombre" value="{{ formulario.get('nombre', '') }}" placeholder="Ej. Alex García" required maxlength="100" autocomplete="name">
         </div>
         <div class="campo">
             <label for="telefono"><svg class="icono-campo" aria-hidden="true"><use href="#icono-telefono"></use></svg> Teléfono <span class="requerido">*</span></label>
-            <input type="tel" id="telefono" name="telefono" placeholder="Ej. 55 1234 5678" required maxlength="30" autocomplete="tel">
+            <input type="tel" id="telefono" name="telefono" value="{{ formulario.get('telefono', '') }}" placeholder="Ej. 55 1234 5678" required maxlength="30" autocomplete="tel">
         </div>
         <div class="campo">
             <label for="correo"><svg class="icono-campo" aria-hidden="true"><use href="#icono-correo"></use></svg> Correo electrónico</label>
-            <input type="email" id="correo" name="correo" placeholder="ejemplo@correo.com" maxlength="120" autocomplete="email">
+            <input type="email" id="correo" name="correo" value="{{ formulario.get('correo', '') }}" placeholder="ejemplo@correo.com" maxlength="254" autocomplete="email">
         </div>
         <div class="campo">
             <label for="categoria"><svg class="icono-campo" aria-hidden="true"><use href="#icono-etiqueta"></use></svg> Categoría <span class="requerido">*</span></label>
             <select id="categoria" name="categoria" required>
                 <option value="">Selecciona una categoría</option>
-                <option>Familia</option>
-                <option>Amigos</option>
-                <option>Escuela</option>
-                <option>Trabajo</option>
-                <option>Otros</option>
+                {% for categoria in categorias %}
+                <option value="{{ categoria }}" {% if formulario.get('categoria') == categoria %}selected{% endif %}>{{ categoria }}</option>
+                {% endfor %}
             </select>
         </div>
         <button type="submit" class="boton boton-principal"><svg class="icono-boton" aria-hidden="true"><use href="#icono-agregar"></use></svg> Guardar en el equipo</button>

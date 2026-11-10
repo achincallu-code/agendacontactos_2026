@@ -63,10 +63,14 @@ AgendaContactos/
 Abre la carpeta `AgendaContactos` en VS Code. En el menú **Terminal > Nuevo terminal**, ejecuta estos comandos, uno por uno:
 
 ```powershell
-py -m venv venv
-.\venv\Scripts\Activate.ps1
-python -m pip install -r requirements.txt
-python app.py
+.\.venv\Scripts\python.exe app.py
+```
+
+El proyecto ya incluye el entorno virtual `.venv`. Si no existe en otra computadora, créalo e instala las dependencias una sola vez:
+
+```powershell
+py -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
 Cuando la terminal muestre que Flask está ejecutándose, abre en tu navegador:
@@ -88,7 +92,7 @@ El proyecto incluye `render.yaml` con los comandos de construcción e inicio, `g
 
    ```powershell
    $env:DATABASE_URL = "tu-cadena-de-conexion-directa-de-neon"
-   .\venv\Scripts\python.exe migrar_sqlite_a_postgres.py --owner-email "tu-correo@ejemplo.com"
+   .\.venv\Scripts\python.exe migrar_sqlite_a_postgres.py --owner-email "tu-correo@ejemplo.com"
    ```
 
    El migrador conserva los IDs y se detiene si la tabla destino ya tiene contactos. Verifica que el correo ya exista en el sitio. No borra ni modifica `contactos.db`.
@@ -113,10 +117,7 @@ Solo esa cuenta podrá reclamar los contactos antiguos. No habilites esta opció
 Si aparece un mensaje de que la ejecución de scripts está deshabilitada, puedes abrir una terminal **Command Prompt (CMD)** en VS Code y ejecutar:
 
 ```bat
-py -m venv venv
-venv\Scripts\activate.bat
-python -m pip install -r requirements.txt
-python app.py
+.\.venv\Scripts\python.exe app.py
 ```
 
 ## 6. ¿Dónde está cada parte del código?

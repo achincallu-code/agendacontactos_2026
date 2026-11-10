@@ -40,6 +40,8 @@ def _ejecutar(consulta, parametros=(), modo=None):
                 resultado = cursor.fetchone()
             elif modo == "todos":
                 resultado = cursor.fetchall()
+            elif modo == "rowcount":
+                resultado = cursor.rowcount
             else:
                 resultado = None
             conexion.commit()
@@ -188,20 +190,24 @@ def agregar_contacto(nombre, telefono, correo, categoria, usuario_id):
 
 def actualizar_contacto(contacto_id, nombre, telefono, correo, categoria, usuario_id):
     """UPDATE: modifica solo el contacto cuyo ID y propietario coinciden."""
-    _ejecutar(
+    filas_actualizadas = _ejecutar(
         """UPDATE contactos
            SET nombre = ?, telefono = ?, correo = ?, categoria = ?
            WHERE id = ? AND usuario_id = ?""",
         (nombre, telefono, correo, categoria, contacto_id, usuario_id),
+        modo="rowcount",
     )
+    return filas_actualizadas > 0
 
 
 def eliminar_contacto(contacto_id, usuario_id):
     """DELETE: elimina solo el contacto perteneciente a la cuenta indicada."""
-    _ejecutar(
+    filas_eliminadas = _ejecutar(
         "DELETE FROM contactos WHERE id = ? AND usuario_id = ?",
         (contacto_id, usuario_id),
+        modo="rowcount",
     )
+    return filas_eliminadas > 0
 
 
 def verificar_conexion():

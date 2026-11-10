@@ -23,21 +23,25 @@
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <div class="campo">
             <label for="nombre"><svg class="icono-campo" aria-hidden="true"><use href="#icono-usuario"></use></svg> Nombre <span class="requerido">*</span></label>
-            <input type="text" id="nombre" name="nombre" value="{{ contacto['nombre'] }}" required maxlength="100" autocomplete="name">
+            <input type="text" id="nombre" name="nombre" value="{{ request.form.get('nombre', contacto['nombre']) }}" required maxlength="100" autocomplete="name">
         </div>
         <div class="campo">
             <label for="telefono"><svg class="icono-campo" aria-hidden="true"><use href="#icono-telefono"></use></svg> Teléfono <span class="requerido">*</span></label>
-            <input type="tel" id="telefono" name="telefono" value="{{ contacto['telefono'] }}" required maxlength="30" autocomplete="tel">
+            <input type="tel" id="telefono" name="telefono" value="{{ request.form.get('telefono', contacto['telefono']) }}" required maxlength="30" autocomplete="tel">
         </div>
         <div class="campo">
             <label for="correo"><svg class="icono-campo" aria-hidden="true"><use href="#icono-correo"></use></svg> Correo electrónico</label>
-            <input type="email" id="correo" name="correo" value="{{ contacto['correo'] or '' }}" maxlength="120" autocomplete="email">
+            <input type="email" id="correo" name="correo" value="{{ request.form.get('correo', contacto['correo'] or '') }}" maxlength="254" autocomplete="email">
         </div>
         <div class="campo">
             <label for="categoria"><svg class="icono-campo" aria-hidden="true"><use href="#icono-etiqueta"></use></svg> Categoría <span class="requerido">*</span></label>
             <select id="categoria" name="categoria" required>
-                {% for opcion in ["Familia", "Amigos", "Escuela", "Trabajo", "Otros"] %}
-                    <option value="{{ opcion }}" {% if contacto["categoria"] == opcion %}selected{% endif %}>{{ opcion }}</option>
+                {% set categoria_actual = request.form.get('categoria', contacto['categoria']) %}
+                {% if contacto['categoria'] not in categorias %}
+                    <option value="{{ contacto['categoria'] }}" {% if categoria_actual == contacto['categoria'] %}selected{% endif %}>{{ contacto['categoria'] }} (actual)</option>
+                {% endif %}
+                {% for opcion in categorias %}
+                    <option value="{{ opcion }}" {% if categoria_actual == opcion %}selected{% endif %}>{{ opcion }}</option>
                 {% endfor %}
             </select>
         </div>
