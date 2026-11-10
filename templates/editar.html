@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block titulo %}Editar contacto | Red Bull Racing Contacts{% endblock %}
+
+{% block contenido %}
+<section class="encabezado-pagina encabezado-editar">
+    <div>
+        <p class="sobrelinea"><span class="linea-acento"></span> ACTUALIZAR INFORMACIÓN · CONTACTO #{{ contacto["id"] }}</p>
+        <h1>Ajusta la <span class="texto-acento">estrategia.</span></h1>
+        <p class="subtitulo">Edita la información y guarda los cambios en tu equipo.</p>
+    </div>
+    <a href="{{ url_for('inicio') }}" class="boton boton-secundario">← Volver a la agenda</a>
+</section>
+
+<section class="panel formulario-panel panel-editar">
+    <div class="titulo-panel">
+        <div>
+            <p class="sobrelinea"><span class="linea-acento"></span> EDITANDO PERFIL</p>
+            <h2>{{ contacto["nombre"] }}</h2>
+        </div>
+        <span class="numero-seccion" aria-hidden="true">02</span>
+    </div>
+    <form action="{{ url_for('editar', contacto_id=contacto['id']) }}" method="POST" class="formulario">
+        <div class="campo">
+            <label for="nombre"><svg class="icono-campo" aria-hidden="true"><use href="#icono-usuario"></use></svg> Nombre <span class="requerido">*</span></label>
+            <input type="text" id="nombre" name="nombre" value="{{ contacto['nombre'] }}" required maxlength="100" autocomplete="name">
+        </div>
+        <div class="campo">
+            <label for="telefono"><svg class="icono-campo" aria-hidden="true"><use href="#icono-telefono"></use></svg> Teléfono <span class="requerido">*</span></label>
+            <input type="tel" id="telefono" name="telefono" value="{{ contacto['telefono'] }}" required maxlength="30" autocomplete="tel">
+        </div>
+        <div class="campo">
+            <label for="correo"><svg class="icono-campo" aria-hidden="true"><use href="#icono-correo"></use></svg> Correo electrónico</label>
+            <input type="email" id="correo" name="correo" value="{{ contacto['correo'] or '' }}" maxlength="120" autocomplete="email">
+        </div>
+        <div class="campo">
+            <label for="categoria"><svg class="icono-campo" aria-hidden="true"><use href="#icono-etiqueta"></use></svg> Categoría <span class="requerido">*</span></label>
+            <select id="categoria" name="categoria" required>
+                {% for opcion in ["Familia", "Amigos", "Escuela", "Trabajo", "Otros"] %}
+                    <option value="{{ opcion }}" {% if contacto["categoria"] == opcion %}selected{% endif %}>{{ opcion }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="boton boton-principal"><svg class="icono-boton" aria-hidden="true"><use href="#icono-equipo"></use></svg> Guardar cambios</button>
+    </form>
+</section>
+{% endblock %}

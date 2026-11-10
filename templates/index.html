@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block titulo %}Inicio | Red Bull Racing Contacts{% endblock %}
+
+{% block contenido %}
+<section class="encabezado-pagina" id="inicio">
+    <div>
+        <p class="sobrelinea"><span class="linea-acento"></span> CONTACTOS · TEMPORADA ACTUAL</p>
+        <h1>Tu equipo.<br><span class="texto-acento">Tu carrera.</span></h1>
+        <p class="subtitulo">Toda tu gente importante, lista en la parrilla de salida.</p>
+    </div>
+    <div class="contador">
+        <svg class="contador-icono" aria-hidden="true"><use href="#icono-equipo"></use></svg>
+        <span class="contador-numero">{{ contactos|length }}</span>
+        <span class="contador-texto">CONTACTOS<br><strong>EN TU GRID</strong></span>
+    </div>
+</section>
+
+<section class="panel formulario-panel" id="agregar">
+    <div class="titulo-panel">
+        <div>
+            <p class="sobrelinea"><span class="linea-acento"></span> NUEVA INCORPORACIÓN</p>
+            <h2>Agregar contacto</h2>
+        </div>
+        <span class="numero-seccion" aria-hidden="true">01</span>
+    </div>
+
+    <form action="{{ url_for('agregar') }}" method="POST" class="formulario">
+        <div class="campo">
+            <label for="nombre"><svg class="icono-campo" aria-hidden="true"><use href="#icono-usuario"></use></svg> Nombre <span class="requerido">*</span></label>
+            <input type="text" id="nombre" name="nombre" placeholder="Ej. Alex García" required maxlength="100" autocomplete="name">
+        </div>
+        <div class="campo">
+            <label for="telefono"><svg class="icono-campo" aria-hidden="true"><use href="#icono-telefono"></use></svg> Teléfono <span class="requerido">*</span></label>
+            <input type="tel" id="telefono" name="telefono" placeholder="Ej. 55 1234 5678" required maxlength="30" autocomplete="tel">
+        </div>
+        <div class="campo">
+            <label for="correo"><svg class="icono-campo" aria-hidden="true"><use href="#icono-correo"></use></svg> Correo electrónico</label>
+            <input type="email" id="correo" name="correo" placeholder="ejemplo@correo.com" maxlength="120" autocomplete="email">
+        </div>
+        <div class="campo">
+            <label for="categoria"><svg class="icono-campo" aria-hidden="true"><use href="#icono-etiqueta"></use></svg> Categoría <span class="requerido">*</span></label>
+            <select id="categoria" name="categoria" required>
+                <option value="">Selecciona una categoría</option>
+                <option>Familia</option>
+                <option>Amigos</option>
+                <option>Escuela</option>
+                <option>Trabajo</option>
+                <option>Otros</option>
+            </select>
+        </div>
+        <button type="submit" class="boton boton-principal"><svg class="icono-boton" aria-hidden="true"><use href="#icono-agregar"></use></svg> Guardar en el equipo</button>
+    </form>
+    <p class="nota-campos"><span class="requerido">*</span> Campos obligatorios <span class="nota-separador">·</span> Tu información permanece en tu base de datos local.</p>
+</section>
+
+<section class="seccion-contactos" id="contactos">
+    <div class="titulo-lista" id="categorias">
+        <div>
+            <p class="sobrelinea"><span class="linea-acento"></span> DIRECTORIO DEL EQUIPO</p>
+            <h2>Mis contactos <span class="titulo-cantidad">({{ contactos|length }})</span></h2>
+        </div>
+        {% if contactos %}
+        <div class="controles-lista">
+            <label class="buscador" for="buscar">
+                <svg class="icono-buscar" aria-hidden="true"><use href="#icono-buscar"></use></svg>
+                <input type="search" id="buscar" placeholder="Buscar contacto..." aria-label="Buscar por nombre, teléfono o correo">
+            </label>
+            <label class="filtro-categoria" for="filtro-categoria">
+                <span class="sr-only">Filtrar por categoría</span>
+                <select id="filtro-categoria" aria-label="Filtrar por categoría">
+                    <option value="">Todas las categorías</option>
+                </select>
+            </label>
+        </div>
+        {% endif %}
+    </div>
+
+    {% if contactos %}
+        <div class="rejilla-contactos" id="lista-contactos">
+            {% for contacto in contactos %}
+            <article class="tarjeta-contacto" data-categoria="{{ contacto['categoria'] }}">
+                <div class="cabecera-tarjeta">
+                    <span class="avatar">{{ contacto["nombre"][0]|upper }}</span>
+                    <span class="categoria">{{ contacto["categoria"] }}</span>
+                    <span class="id-contacto">#{{ contacto["id"] }}</span>
+                </div>
+                <h3 class="nombre-contacto">{{ contacto["nombre"] }}</h3>
+                <div class="dato-contacto"><svg class="dato-icono" aria-hidden="true"><use href="#icono-telefono"></use></svg><span>{{ contacto["telefono"] }}</span></div>
+                <div class="dato-contacto"><svg class="dato-icono" aria-hidden="true"><use href="#icono-correo"></use></svg><span>{{ contacto["correo"] or "Sin correo electrónico" }}</span></div>
+                <div class="acciones">
+                    <a class="boton boton-editar" href="{{ url_for('editar', contacto_id=contacto['id']) }}"><svg class="icono-boton" aria-hidden="true"><use href="#icono-editar"></use></svg> Editar</a>
+                    <form action="{{ url_for('eliminar', contacto_id=contacto['id']) }}" method="POST" class="form-eliminar">
+                        <button class="boton boton-borrar" type="submit" aria-label="Eliminar contacto {{ contacto['nombre'] }}"><svg class="icono-boton" aria-hidden="true"><use href="#icono-eliminar"></use></svg> Eliminar</button>
+                    </form>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+        <p id="sin-resultados" class="sin-resultados oculto">No se encontraron contactos con esos filtros.</p>
+    {% else %}
+        <div class="vacio">
+            <svg class="vacio-icono" aria-hidden="true"><use href="#icono-contactos"></use></svg>
+            <p class="sobrelinea">PARRILLA VACÍA</p>
+            <h3>Aún no tienes contactos</h3>
+            <p>Agrega a tu primera persona importante y empieza a formar tu equipo.</p>
+            <a class="boton boton-secundario" href="#agregar">Agregar primer contacto</a>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}
