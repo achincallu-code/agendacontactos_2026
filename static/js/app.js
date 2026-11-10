@@ -1,5 +1,17 @@
 // Búsqueda, filtro de categorías, menú móvil y confirmación de borrado.
 document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll("[data-password-toggle]").forEach(function (boton) {
+        const campo = document.getElementById(boton.dataset.passwordToggle);
+        if (!campo) return;
+
+        boton.addEventListener("click", function () {
+            const mostrar = campo.type === "password";
+            campo.type = mostrar ? "text" : "password";
+            boton.setAttribute("aria-pressed", String(mostrar));
+            boton.setAttribute("aria-label", mostrar ? "Ocultar contraseña" : "Mostrar contraseña");
+        });
+    });
+
     const buscador = document.getElementById("buscar");
     const filtroCategoria = document.getElementById("filtro-categoria");
     const tarjetas = Array.from(document.querySelectorAll(".tarjeta-contacto"));

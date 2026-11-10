@@ -2,32 +2,55 @@
 {% block titulo %}Iniciar sesión | Red Bull Racing Contacts{% endblock %}
 
 {% block contenido %}
-<section class="pantalla-acceso">
-    <a class="marca-acceso" href="{{ url_for('iniciar_sesion') }}" aria-label="Red Bull Racing Contacts">
-        <span class="marca-avatar">
-            <img src="{{ url_for('static', filename='img/image.png') }}" alt="">
-        </span>
-        <span>RED BULL <strong>RACING</strong><small>CONTACTS · PIT WALL</small></span>
-    </a>
-    <div class="panel-acceso">
-        <div class="acceso-destello" aria-hidden="true"></div>
-        <p class="sobrelinea"><span class="linea-acento"></span> ACCESO DE PILOTO</p>
-        <h1>Inicia <span class="texto-acento">sesión.</span></h1>
-        <p class="subtitulo">Entra a tu garage personal y encuentra a tu equipo.</p>
+<section class="pantalla-acceso acceso-login">
+    <header class="encabezado-acceso" aria-label="Fórmula 1, drive your passion">
+        <div class="logo-f1">F1</div>
+        <div class="lema-f1"><span></span> DRIVE YOUR PASSION <span></span></div>
+        <div class="marca-pitlane" aria-hidden="true"><span>▧</span> PIT LANE</div>
+    </header>
+
+    <section class="panel-acceso" aria-labelledby="titulo-acceso">
+        <span class="patron-cuadros patron-panel" aria-hidden="true"></span>
+        <div class="emblema-acceso" aria-hidden="true">
+            <svg viewBox="0 0 48 48"><path d="M8 40V8m3 2h25v18H11"/><path d="M11 10h8v8h-8zm16 0h8v8h-8zm-8 8h8v8h-8zm16 0h7v8h-7z" fill="currentColor"/></svg>
+        </div>
+        <h1 id="titulo-acceso">Iniciar <span>sesión</span></h1>
+        <p class="subtitulo subtitulo-acceso">Bienvenido de vuelta, piloto. <span aria-hidden="true">🏁</span></p>
+
         <form action="{{ url_for('iniciar_sesion') }}" method="POST" class="formulario-acceso">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-            <label for="correo-acceso">Correo electrónico</label>
-            <input id="correo-acceso" name="correo" type="email" autocomplete="email" maxlength="254" placeholder="tu@correo.com" required value="{{ request.form.get('correo', '') }}">
-            <label for="contrasena-acceso">Contraseña</label>
-            <input id="contrasena-acceso" name="contrasena" type="password" autocomplete="current-password" maxlength="128" placeholder="Tu contraseña" required>
-            <label class="opcion-recordar">
-                <input type="checkbox" name="recordarme" {% if request.form.get('recordarme') %}checked{% endif %}>
-                <span>Recordarme en este dispositivo</span>
-            </label>
-            <button type="submit" class="boton boton-principal boton-acceso">ENTRAR AL GARAGE <span aria-hidden="true">→</span></button>
+            <label class="sr-only" for="correo-acceso">Correo electrónico</label>
+            <div class="campo-acceso">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg>
+                <input id="correo-acceso" name="correo" type="email" autocomplete="email" maxlength="254" placeholder="Correo electrónico" required value="{{ request.form.get('correo', '') }}">
+            </div>
+
+            <label class="sr-only" for="contrasena-acceso">Contraseña</label>
+            <div class="campo-acceso campo-contrasena">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 4v3"/></svg>
+                <input id="contrasena-acceso" name="contrasena" type="password" autocomplete="current-password" maxlength="128" placeholder="Contraseña" required>
+                <button class="alternar-contrasena" type="button" data-password-toggle="contrasena-acceso" aria-label="Mostrar contraseña" aria-pressed="false">
+                    <svg class="ojo-abierto" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+                    <svg class="ojo-cerrado" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 3 18 18M10.6 10.6a2 2 0 0 0 2.8 2.8"/><path d="M9.9 5.2A10.7 10.7 0 0 1 12 5c6.4 0 10 7 10 7a15.7 15.7 0 0 1-3.1 3.8M6.2 6.2C3.5 8 2 12 2 12s3.6 7 10 7a10.5 10.5 0 0 0 4-.8"/></svg>
+                </button>
+            </div>
+
+            <div class="opciones-acceso">
+                <label class="opcion-recordar">
+                    <input type="checkbox" name="recordarme" {% if request.form.get('recordarme') %}checked{% endif %}>
+                    <span class="cuadro-recordar" aria-hidden="true"></span>
+                    <span>Recordarme</span>
+                </label>
+                <span class="recuperacion-inactiva" title="La recuperación por correo todavía no está configurada">¿Olvidaste tu contraseña?</span>
+            </div>
+
+            <button type="submit" class="boton boton-principal boton-acceso"><span>ENTRAR</span><span class="flecha-acceso" aria-hidden="true">→</span><span class="patron-cuadros patron-boton" aria-hidden="true"></span></button>
         </form>
-        <p class="enlace-acceso">¿Aún no tienes cuenta? <a href="{{ url_for('crear_cuenta') }}">Crear cuenta <span aria-hidden="true">→</span></a></p>
-    </div>
-    <p class="pie-acceso">TU GARAGE. TU EQUIPO. TU CARRERA. <span class="bandera-cuadros" aria-hidden="true"></span></p>
+
+        <div class="separador-f1"><span></span><i>F1</i><span></span></div>
+        <p class="enlace-acceso">¿No tienes una cuenta? <a href="{{ url_for('crear_cuenta') }}">Crear cuenta <span aria-hidden="true">→</span></a></p>
+    </section>
+
+    <p class="pie-acceso">AULA 306 <span>·</span> ENCIENDE TU PRÓXIMA META</p>
 </section>
 {% endblock %}

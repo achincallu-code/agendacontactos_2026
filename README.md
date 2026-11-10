@@ -47,8 +47,7 @@ AgendaContactos/
 │   │   └── app.js         # Búsqueda, filtro, menú móvil y confirmación al borrar
 │   └── img/
 │       ├── fondo-redbull.png
-│       ├── image.png         # Logo de la barra de navegación
-│       └── findo_f1.jpeg     # Imagen original conservada
+│       └── image.png         # Logo de la barra de navegación
 ```
 
 > Conserva `contactos.db` para mantener tus contactos locales. Flask usa SQLite localmente y PostgreSQL cuando se configura `DATABASE_URL`. En Render gratuito, el disco local es temporal; configura PostgreSQL antes de desplegar para no perder los contactos.
@@ -151,7 +150,7 @@ Contiene recursos que no son plantillas:
 
 ### Imagen de fondo
 
-El logo de la navegación se carga desde `static/img/image.png` y se presenta dentro de un avatar circular con borde luminoso. El fondo global se carga desde `static/img/fondo-redbull.png`. Se creó a partir de la imagen `static/img/findo_f1.jpeg`, que se conserva intacta. En computadoras se adapta con `background-size: cover`; en celulares se muestra una capa nítida ajustada al ancho para conservar la imagen completa, sobre una capa de fondo suavizada. Ambas capas incorporan sombras para facilitar la lectura.
+El logo de la navegación se carga desde `static/img/image.png` y se presenta dentro de un avatar circular con borde luminoso. El fondo global se carga desde `static/img/fondo-redbull.png`. En computadoras se adapta con `background-size: cover`; en celulares se muestra una capa nítida ajustada al ancho para conservar la imagen completa, sobre una capa de fondo suavizada. Ambas capas incorporan sombras para facilitar la lectura.
 
 ### `migrar_sqlite_a_postgres.py`
 Migra los contactos locales a una cuenta existente en PostgreSQL, preservando IDs y datos originales. Requiere `--owner-email`; se ejecuta después de desplegar y crear esa cuenta. No elimina ni cambia el archivo SQLite local.
