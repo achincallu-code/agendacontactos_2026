@@ -269,6 +269,29 @@ h2 { margin: 0; font-size: 19px; font-style: italic; font-weight: 850; letter-sp
     place-items: center;
     padding: 28px 16px;
 }
+.pagina-acceso .fondo-ambiente {
+    background-image:
+        linear-gradient(90deg, rgba(4, 10, 22, .58), rgba(4, 10, 22, .4) 45%, rgba(4, 10, 22, .6)),
+        linear-gradient(0deg, rgba(4, 9, 18, .52), rgba(4, 9, 18, .18) 48%, rgba(4, 9, 18, .35)),
+        url("../img/inicio.jpeg");
+    background-position: center;
+    background-size: cover;
+    filter: blur(7px) brightness(.68) saturate(1.2);
+    transform: scale(1.04);
+}
+.pagina-acceso .fondo-imagen-movil {
+    position: fixed;
+    z-index: 0;
+    inset: 0;
+    display: block;
+    background-image:
+        linear-gradient(180deg, rgba(4, 10, 22, .17), rgba(4, 10, 22, .25) 60%, rgba(4, 10, 22, .36)),
+        url("../img/inicio.jpeg");
+    background-position: center, center;
+    background-size: 100% 100%, contain;
+    background-repeat: no-repeat;
+    pointer-events: none;
+}
 .pantalla-acceso { width: min(460px, 100%); animation: aparecer .55s ease both; }
 .marca-acceso {
     display: flex;
@@ -339,4 +362,15 @@ h2 { margin: 0; font-size: 19px; font-style: italic; font-weight: 850; letter-sp
     .acceso-contenedor { padding: 19px 13px; }
     .panel-acceso { padding: 25px 21px; border-radius: 17px; }
     .marca-acceso { margin-bottom: 13px; }
+}
+
+@media (max-width: 620px) {
+    .pagina-acceso .fondo-ambiente {
+        background-position: center;
+        filter: blur(8px) brightness(.52) saturate(1.2);
+    }
+    .pagina-acceso .fondo-imagen-movil {
+        background-position: center, center top;
+        background-size: 100% 100%, 100% auto;
+    }
 }

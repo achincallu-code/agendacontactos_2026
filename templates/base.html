@@ -7,7 +7,7 @@
     <title>{% block titulo %}Agenda de Contactos{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
 </head>
-<body>
+<body{% if not g.usuario %} class="pagina-acceso"{% endif %}>
     <div class="fondo-ambiente" aria-hidden="true"></div>
     <div class="fondo-imagen-movil" aria-hidden="true"></div>
     <svg class="iconos-ui" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
