@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block titulo %}Crear cuenta | Red Bull Racing Contacts{% endblock %}
+
+{% block contenido %}
+<section class="pantalla-acceso">
+    <a class="marca-acceso" href="{{ url_for('iniciar_sesion') }}" aria-label="Red Bull Racing Contacts">
+        <span class="marca-avatar">
+            <img src="{{ url_for('static', filename='img/image.png') }}" alt="">
+        </span>
+        <span>RED BULL <strong>RACING</strong><small>CONTACTS · PIT WALL</small></span>
+    </a>
+    <div class="panel-acceso">
+        <div class="acceso-destello" aria-hidden="true"></div>
+        <p class="sobrelinea"><span class="linea-acento"></span> NUEVO PILOTO EN LA PARRILLA</p>
+        <h1>Crea tu <span class="texto-acento">cuenta.</span></h1>
+        <p class="subtitulo">Tu garage es privado: cada cuenta tiene sus propios contactos.</p>
+        <form action="{{ url_for('crear_cuenta') }}" method="POST" class="formulario-acceso">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <label for="nombre-cuenta">Nombre</label>
+            <input id="nombre-cuenta" name="nombre" type="text" autocomplete="name" maxlength="80" placeholder="Tu nombre" required value="{{ request.form.get('nombre', '') }}">
+            <label for="correo-cuenta">Correo electrónico</label>
+            <input id="correo-cuenta" name="correo" type="email" autocomplete="email" maxlength="254" placeholder="tu@correo.com" required value="{{ request.form.get('correo', '') }}">
+            <label for="contrasena-cuenta">Contraseña</label>
+            <input id="contrasena-cuenta" name="contrasena" type="password" autocomplete="new-password" minlength="8" maxlength="128" placeholder="Al menos 8 caracteres" required>
+            <button type="submit" class="boton boton-principal boton-acceso">CREAR CUENTA <span aria-hidden="true">→</span></button>
+        </form>
+        <p class="enlace-acceso">¿Ya tienes cuenta? <a href="{{ url_for('iniciar_sesion') }}">Inicia sesión <span aria-hidden="true">→</span></a></p>
+    </div>
+    <p class="pie-acceso">UNA CUENTA. UN GARAGE PRIVADO. <span class="bandera-cuadros" aria-hidden="true"></span></p>
+</section>
+{% endblock %}

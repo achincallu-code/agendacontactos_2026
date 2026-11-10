@@ -25,6 +25,7 @@
         <symbol id="icono-eliminar" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2m3 0-1 14H6L5 6"/><path d="M10 11v5M14 11v5"/></symbol>
         <symbol id="icono-equipo" viewBox="0 0 24 24"><path d="M12 3 14.8 9.2 21 12l-6.2 2.8L12 21l-2.8-6.2L3 12l6.2-2.8z"/><path d="m19 2 .8 2.2L22 5l-2.2.8L19 8l-.8-2.2L16 5l2.2-.8z"/></symbol>
     </svg>
+    {% if g.usuario %}
     <button class="menu-movil" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="navegacion">
         <span></span><span></span><span></span>
     </button>
@@ -62,26 +63,38 @@
         <div class="area-principal">
             <header class="barra-superior">
                 <div class="miga-pan"><span>RB</span> <span aria-hidden="true">/</span> GARAGE DIGITAL</div>
-                <div class="estado-header"><span class="punto-estado"></span> SISTEMA ACTIVO <span class="separador-header"></span> F1 · 2025</div>
+                <div class="estado-header">
+                    <span class="punto-estado"></span> <span class="nombre-usuario">{{ g.usuario["nombre"] }}</span>
+                    <span class="separador-header"></span>
+                    <form action="{{ url_for('cerrar_sesion') }}" method="POST" class="form-cerrar-sesion">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit">Cerrar sesión</button>
+                    </form>
+                </div>
             </header>
             <main class="contenedor">
-                {% with mensajes = get_flashed_messages(with_categories=true) %}
-                    {% if mensajes %}
-                        <section class="mensajes" aria-live="polite">
-                            {% for categoria, mensaje in mensajes %}
-                                <div class="alerta {{ categoria }}"><span class="punto-alerta" aria-hidden="true"></span>{{ mensaje }}</div>
-                            {% endfor %}
-                        </section>
-                    {% endif %}
-                {% endwith %}
-                {% block contenido %}{% endblock %}
-            </main>
+    {% else %}
+    <main class="acceso-contenedor">
+    {% endif %}
+        {% with mensajes = get_flashed_messages(with_categories=true) %}
+            {% if mensajes %}
+                <section class="mensajes" aria-live="polite">
+                    {% for categoria, mensaje in mensajes %}
+                        <div class="alerta {{ categoria }}"><span class="punto-alerta" aria-hidden="true"></span>{{ mensaje }}</div>
+                    {% endfor %}
+                </section>
+            {% endif %}
+        {% endwith %}
+        {% block contenido %}{% endblock %}
+    </main>
+    {% if g.usuario %}
             <footer class="pie" id="acerca">
-                <span>AGENDA DE CONTACTOS <span class="texto-acento">·</span> PROYECTO FLASK + SQLITE</span>
+                <span>AGENDA DE CONTACTOS <span class="texto-acento">·</span> TU ESPACIO PRIVADO</span>
                 <span>DESIGNED FOR THE GRID <span class="bandera-cuadros" aria-hidden="true"></span></span>
             </footer>
         </div>
     </div>
+    {% endif %}
     <script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
 </body>
 </html>

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block titulo %}Iniciar sesión | Red Bull Racing Contacts{% endblock %}
+
+{% block contenido %}
+<section class="pantalla-acceso">
+    <a class="marca-acceso" href="{{ url_for('iniciar_sesion') }}" aria-label="Red Bull Racing Contacts">
+        <span class="marca-avatar">
+            <img src="{{ url_for('static', filename='img/image.png') }}" alt="">
+        </span>
+        <span>RED BULL <strong>RACING</strong><small>CONTACTS · PIT WALL</small></span>
+    </a>
+    <div class="panel-acceso">
+        <div class="acceso-destello" aria-hidden="true"></div>
+        <p class="sobrelinea"><span class="linea-acento"></span> ACCESO DE PILOTO</p>
+        <h1>Inicia <span class="texto-acento">sesión.</span></h1>
+        <p class="subtitulo">Entra a tu garage personal y encuentra a tu equipo.</p>
+        <form action="{{ url_for('iniciar_sesion') }}" method="POST" class="formulario-acceso">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <label for="correo-acceso">Correo electrónico</label>
+            <input id="correo-acceso" name="correo" type="email" autocomplete="email" maxlength="254" placeholder="tu@correo.com" required value="{{ request.form.get('correo', '') }}">
+            <label for="contrasena-acceso">Contraseña</label>
+            <input id="contrasena-acceso" name="contrasena" type="password" autocomplete="current-password" maxlength="128" placeholder="Tu contraseña" required>
+            <label class="opcion-recordar">
+                <input type="checkbox" name="recordarme" {% if request.form.get('recordarme') %}checked{% endif %}>
+                <span>Recordarme en este dispositivo</span>
+            </label>
+            <button type="submit" class="boton boton-principal boton-acceso">ENTRAR AL GARAGE <span aria-hidden="true">→</span></button>
+        </form>
+        <p class="enlace-acceso">¿Aún no tienes cuenta? <a href="{{ url_for('crear_cuenta') }}">Crear cuenta <span aria-hidden="true">→</span></a></p>
+    </div>
+    <p class="pie-acceso">TU GARAGE. TU EQUIPO. TU CARRERA. <span class="bandera-cuadros" aria-hidden="true"></span></p>
+</section>
+{% endblock %}

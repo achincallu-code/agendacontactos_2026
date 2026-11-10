@@ -20,6 +20,7 @@
         <span class="numero-seccion" aria-hidden="true">02</span>
     </div>
     <form action="{{ url_for('editar', contacto_id=contacto['id']) }}" method="POST" class="formulario">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <div class="campo">
             <label for="nombre"><svg class="icono-campo" aria-hidden="true"><use href="#icono-usuario"></use></svg> Nombre <span class="requerido">*</span></label>
             <input type="text" id="nombre" name="nombre" value="{{ contacto['nombre'] }}" required maxlength="100" autocomplete="name">

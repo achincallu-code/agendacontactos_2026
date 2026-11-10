@@ -226,7 +226,7 @@ h2 { margin: 0; font-size: 19px; font-style: italic; font-weight: 850; letter-sp
     .barra-superior { min-height: 57px; justify-content: space-between; padding-right: 15px; padding-left: 60px; }
     .miga-pan { gap: 7px; font-size: 8px; }
     .estado-header { gap: 6px; font-size: 7px; letter-spacing: .5px; }
-    .estado-header .separador-header, .estado-header .separador-header ~ * { display: none; }
+    .estado-header .nombre-usuario, .estado-header .separador-header { display: none; }
     .contenedor { padding: 27px 16px 38px; }
     .encabezado-pagina { align-items: flex-start; flex-direction: column; gap: 16px; margin-bottom: 21px; }
     h1 { font-size: clamp(35px, 10vw, 49px); }
@@ -247,4 +247,96 @@ h2 { margin: 0; font-size: 19px; font-style: italic; font-weight: 850; letter-sp
 }
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+
+.form-cerrar-sesion { margin: 0; }
+.form-cerrar-sesion button {
+    padding: 5px 9px;
+    border: 1px solid rgba(112, 184, 255, .3);
+    border-radius: 7px;
+    background: rgba(8, 24, 45, .55);
+    color: #dce8f8;
+    cursor: pointer;
+    font-size: 10px;
+    transition: border-color .2s ease, background .2s ease;
+}
+.form-cerrar-sesion button:hover { border-color: var(--rojo); background: rgba(255, 23, 68, .14); }
+.acceso-contenedor {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    min-height: 100vh;
+    place-items: center;
+    padding: 28px 16px;
+}
+.pantalla-acceso { width: min(460px, 100%); animation: aparecer .55s ease both; }
+.marca-acceso {
+    display: flex;
+    width: fit-content;
+    align-items: center;
+    gap: 12px;
+    margin: 0 auto 17px;
+    color: #eef5ff;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 1.4px;
+    text-decoration: none;
+}
+.marca-acceso .marca-avatar { width: 48px; height: 48px; flex-basis: 48px; }
+.marca-acceso img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+.marca-acceso strong { color: var(--rojo); }
+.marca-acceso small { display: block; margin-top: 4px; color: #98abc4; font-size: 8px; letter-spacing: 2px; }
+.panel-acceso {
+    position: relative;
+    overflow: hidden;
+    padding: clamp(24px, 7vw, 38px);
+    border: 1px solid rgba(106, 185, 255, .46);
+    border-radius: 20px;
+    background: linear-gradient(145deg, rgba(12, 31, 57, .76), rgba(7, 13, 27, .7));
+    box-shadow: 0 20px 70px rgba(0, 0, 0, .35), 0 0 36px rgba(15, 117, 230, .17), inset 0 1px rgba(255, 255, 255, .13);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+}
+.acceso-destello {
+    position: absolute;
+    top: 0;
+    right: 12%;
+    width: 110px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--rojo), var(--azul-brillante), transparent);
+    box-shadow: 0 0 18px rgba(64, 158, 255, .85);
+}
+.panel-acceso .sobrelinea { margin: 0 0 12px; }
+.panel-acceso h1 { margin: 0; font-size: clamp(30px, 7vw, 40px); line-height: 1.1; letter-spacing: -1.5px; }
+.panel-acceso > .subtitulo { margin: 10px 0 25px; }
+.formulario-acceso { display: grid; gap: 9px; }
+.formulario-acceso > label:not(.opcion-recordar) { color: #c9d6e8; font-size: 11px; font-weight: 700; }
+.formulario-acceso > input {
+    width: 100%;
+    min-height: 46px;
+    margin-bottom: 7px;
+    padding: 0 13px;
+    border: 1px solid rgba(105, 163, 226, .42);
+    border-radius: 9px;
+    outline: none;
+    background: rgba(3, 10, 22, .45);
+    color: #f4f8ff;
+    font-size: 13px;
+    transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+.formulario-acceso > input::placeholder { color: #7588a2; }
+.formulario-acceso > input:focus { border-color: var(--azul-brillante); background: rgba(4, 17, 35, .76); box-shadow: 0 0 0 3px rgba(23, 128, 247, .18), 0 0 17px rgba(23, 128, 247, .18); }
+.opcion-recordar { display: flex; align-items: center; gap: 8px; margin: 1px 0 5px; color: #b7c5d8; font-size: 11px; cursor: pointer; }
+.opcion-recordar input { width: 15px; height: 15px; accent-color: var(--azul); }
+.boton-acceso { width: 100%; justify-content: center; margin-top: 5px; }
+.boton-acceso span { margin-left: 5px; }
+.enlace-acceso { margin: 20px 0 0; color: #a7b6ca; font-size: 11px; text-align: center; }
+.enlace-acceso a { color: #79c7ff; font-weight: 750; text-decoration: none; }
+.enlace-acceso a:hover { color: white; text-shadow: 0 0 10px rgba(73, 176, 255, .7); }
+.pie-acceso { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 16px 0 0; color: #8496af; font-size: 8px; font-weight: 800; letter-spacing: 1.5px; }
+
+@media (max-width: 480px) {
+    .acceso-contenedor { padding: 19px 13px; }
+    .panel-acceso { padding: 25px 21px; border-radius: 17px; }
+    .marca-acceso { margin-bottom: 13px; }
 }

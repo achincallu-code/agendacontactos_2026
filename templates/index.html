@@ -25,6 +25,7 @@
     </div>
 
     <form action="{{ url_for('agregar') }}" method="POST" class="formulario">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <div class="campo">
             <label for="nombre"><svg class="icono-campo" aria-hidden="true"><use href="#icono-usuario"></use></svg> Nombre <span class="requerido">*</span></label>
             <input type="text" id="nombre" name="nombre" placeholder="Ej. Alex García" required maxlength="100" autocomplete="name">
@@ -50,7 +51,7 @@
         </div>
         <button type="submit" class="boton boton-principal"><svg class="icono-boton" aria-hidden="true"><use href="#icono-agregar"></use></svg> Guardar en el equipo</button>
     </form>
-    <p class="nota-campos"><span class="requerido">*</span> Campos obligatorios <span class="nota-separador">·</span> Tu información permanece en tu base de datos local.</p>
+    <p class="nota-campos"><span class="requerido">*</span> Campos obligatorios <span class="nota-separador">·</span> Solo tú puedes ver los contactos de tu cuenta.</p>
 </section>
 
 <section class="seccion-contactos" id="contactos">
@@ -90,6 +91,7 @@
                 <div class="acciones">
                     <a class="boton boton-editar" href="{{ url_for('editar', contacto_id=contacto['id']) }}"><svg class="icono-boton" aria-hidden="true"><use href="#icono-editar"></use></svg> Editar</a>
                     <form action="{{ url_for('eliminar', contacto_id=contacto['id']) }}" method="POST" class="form-eliminar">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <button class="boton boton-borrar" type="submit" aria-label="Eliminar contacto {{ contacto['nombre'] }}"><svg class="icono-boton" aria-hidden="true"><use href="#icono-eliminar"></use></svg> Eliminar</button>
                     </form>
                 </div>
